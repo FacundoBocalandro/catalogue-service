@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+service CatalogueService {
+  rpc ProductList (ProductListRequest) returns (ProductListResponse) {}
+  rpc addProduct (ProductAddRequest) returns (ProductListResponse) {}
+}
+
+message ProductListResponse {
+  repeated Product products = 1;
+}
+
+message ProductListRequest {}
+
+message Product {
+  string id = 1;
+  string name = 2;
+}
