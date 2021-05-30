@@ -1,4 +1,6 @@
-id, name, precio
-1, Salame, 140
-2, Queso, 160
-3, Papitas, 120
+1,Salame,140,Argentina
+2,Queso,160,Francia
+3,Papitas,120,Argentina
+4,Jamon Crudo,300,Espana
+5,Leberwurst,250,Alemania
+6,Mani,80,Espana

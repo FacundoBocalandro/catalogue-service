@@ -1,17 +1,22 @@
 syntax = "proto3";
 
+package catalogueservice;
+
 service CatalogueService {
   rpc ProductList (ProductListRequest) returns (ProductListResponse) {}
-  rpc addProduct (ProductAddRequest) returns (ProductListResponse) {}
 }
 
 message ProductListResponse {
   repeated Product products = 1;
 }
 
-message ProductListRequest {}
+message ProductListRequest {
+  string country = 1;
+}
 
 message Product {
   string id = 1;
   string name = 2;
+  string price = 3;
+  string country = 4;
 }

@@ -1,22 +1,21 @@
-import auth_service.AuthServiceGrpc.{AuthService, AuthServiceStub}
-import auth_service.{AuthServiceGrpc, GetAuthenticationResponse, Status, User}
+import catalogueservice.catalogueService.CatalogueServiceGrpc.{CatalogueService, CatalogueServiceStub}
+import catalogueservice.catalogueService.{Product, ProductListRequest, ProductListResponse}
 import io.grpc.{ManagedChannelBuilder, ServerBuilder}
 
 import scala.io._
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 class MyService extends CatalogueService {
-  val locationDatabase = new CSVReader()
+  val productDatabase = new CSVReader()
 
-  override def catalogue(request: User): Future[ProductListResponse] = {
-    val reply = ProductListResponse(products = locationDatabase.authenticate(request))
+  override def productList(request: ProductListRequest): Future[ProductListResponse] = {
+    val reply = ProductListResponse(products = productDatabase.getProductsByCountry(request.country))
     Future.successful(reply)
   }
 }
 
 trait LocationDatabase {
-  def authenticate(user: User): Status
-
+  def getProductsByCountry(country: String): List[Product]
 }
 
 class CSVReader extends LocationDatabase {
@@ -25,11 +24,11 @@ class CSVReader extends LocationDatabase {
 
   val data: List[Product] = getProducts("catalogue.csv")
 
-  def authenticate(user: User): Status = {
-    data.find(_ == user) match {
-      case Some(_) => Status.SUCCESS
-      case None => Status.FAIL
-    }
+  override def getProductsByCountry(country: String): List[Product] = {
+    println("data: " + data)
+    val asd = data.filter(prod => prod.country.equals(country))
+    println("asd: " + asd)
+    asd
   }
 }
 
@@ -40,8 +39,8 @@ object CSVReader {
     val data: List[List[String]] = fileSource.getLines().toList.map(_.split(',').toList)
     fileSource.close()
     data.map {
-      case List(id, name) =>
-        Product(id = id, name = name)
+      case List(id, name, price, country) =>
+        Product(id, name, price, country)
     }
   }
 
