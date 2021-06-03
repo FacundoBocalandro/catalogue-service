@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogue
+  labels:
+    app: catalogue
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: catalogue
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: catalogue
+        tier: backend
+    spec:
+      containers:
+        - name: catalogue
+          image: "catalogue-service:0.1"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ttl
+              valueFrom:
+                configMapKeyRef:
+                  name: catalogue-config
+                  key: ttl
+            - name: port
+              valueFrom:
+                configMapKeyRef:
+                  name: catalogue-config
+                  key: port
